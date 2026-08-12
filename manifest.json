@@ -1,0 +1,9 @@
+{
+  "name": "Two Sides",
+  "short_name": "Two Sides",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#fafafa",
+  "orientation": "portrait"
+}
