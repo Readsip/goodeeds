@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <title>Two Sides</title>
+
+  <meta name="theme-color" content="#fafafa" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Two Sides" />
+
+  <link rel="manifest" href="manifest.json" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #fafafa;
+      color: #111;
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =========================
+       MAIN TWO-SIDE AREA
+       ========================= */
+
+    .sides {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .side {
+      min-height: 75vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      user-select: none;
+    }
+
+    .side:first-child {
+      border-right: 1px solid #dedede;
+    }
+
+    .label {
+      margin-bottom: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #777;
+      text-align: center;
+    }
+
+    .number {
+      font-size: clamp(70px, 13vw, 180px);
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -0.07em;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+      max-width: 95%;
+      overflow-wrap: anywhere;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 38px;
+    }
+
+    .counter-button {
+      width: 58px;
+      height: 50px;
+      border: 1px solid #d0d0d0;
+      border-radius: 14px;
+      background: #fff;
+      color: #111;
+      font-size: 25px;
+      line-height: 1;
+      transition:
+        transform 0.08s ease,
+        background 0.15s ease;
+    }
+
+    .counter-button:hover {
+      background: #f1f1f1;
+    }
+
+    .counter-button:active {
+      transform: scale(0.94);
+    }
+
+    /* =========================
+       BOTTOM BAR
+       ========================= */
+
+    .bottom-bar {
+      min-height: 72px;
+      padding: 12px 20px;
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      border-top: 1px solid #dedede;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: #fafafa;
+    }
+
+    .gap {
+      margin-right: 10px;
+      color: #777;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .bar-button {
+      border: 1px solid #d0d0d0;
+      border-radius: 10px;
+      padding: 9px 14px;
+      background: white;
+      color: #111;
+      font-size: 13px;
+    }
+
+    .bar-button:hover {
+      background: #f1f1f1;
+    }
+
+    .bar-button.primary {
+      background: #111;
+      color: white;
+      border-color: #111;
+    }
+
+    /* =========================
+       SETTINGS MODAL
+       ========================= */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(430px, 100%);
+      padding: 25px;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.18);
+    }
+
+    .modal-card h2 {
+      margin: 0 0 22px;
+      font-size: 22px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      outline: none;
+      background: white;
+      color: #111;
+    }
+
+    .field input:focus {
+      border-color: #111;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background: white;
+    }
+
+    .modal-actions .save-settings {
+      background: #111;
+      color: white;
+      border-color: #111;
+    }
+
+    /* =========================
+       TOAST
+       ========================= */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 90px;
+      z-index: 200;
+      transform: translate(-50%, 15px);
+      opacity: 0;
+      pointer-events: none;
+
+      padding: 10px 15px;
+      border-radius: 10px;
+
+      background: #111;
+      color: white;
+
+      font-size: 13px;
+
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 700px) {
+      .sides {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        min-height: 43vh;
+        padding: 25px 15px;
+      }
+
+      .side:first-child {
+        border-right: 0;
+        border-bottom: 1px solid #dedede;
+      }
+
+      .number {
+        font-size: 22vw;
+      }
+
+      .label {
+        margin-bottom: 20px;
+      }
+
+      .controls {
+        margin-top: 28px;
+      }
+
+      .bottom-bar {
+        padding-top: 10px;
+      }
+
+      .gap {
+        width: 100%;
+        margin: 0;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- =========================
+       TWO SIDES
+       ========================= -->
+
+  <main class="sides">
+
+    <!-- LEFT -->
+    <section class="side">
+
+      <div class="label" id="goodLabel">
+        Good Deeds
+      </div>
+
+      <div class="number" id="goodNumber">
+        0
+      </div>
+
+      <div class="controls">
+        <button
+          class="counter-button"
+          type="button"
+          onclick="changeGood(-1)"
+          aria-label="Decrease good deeds"
+        >
+          −
+        </button>
+
+        <button
+          class="counter-button"
+          type="button"
+          onclick="changeGood(1)"
+          aria-label="Increase good deeds"
+        >
+          +
+        </button>
+      </div>
+
+    </section>
+
+
+    <!-- RIGHT -->
+    <section class="side">
+
+      <div class="label" id="badLabel">
+        Bad Deeds
+      </div>
+
+      <div class="number" id="badNumber">
+        200,000
+      </div>
+
+      <div class="controls">
+
+        <button
+          class="counter-button"
+          type="button"
+          onclick="changeBad(1)"
+          aria-label="Increase bad deeds"
+        >
+          +
+        </button>
+
+        <button
+          class="counter-button"
+          type="button"
+          onclick="changeBad(-1)"
+          aria-label="Decrease bad deeds"
+        >
+          −
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       BOTTOM BAR
+       ========================= -->
+
+  <footer class="bottom-bar">
+
+    <span class="gap" id="gap">
+      Gap: 200,000
+    </span>
+
+    <button
+      class="bar-button primary"
+      type="button"
+      onclick="saveProgress()"
+    >
+      Save
+    </button>
+
+    <button
+      class="bar-button"
+      type="button"
+      onclick="backupProgress()"
+    >
+      Backup
+    </button>
+
+    <button
+      class="bar-button"
+      type="button"
+      onclick="document.getElementById('restoreFile').click()"
+    >
+      Restore
+    </button>
+
+    <input
+      id="restoreFile"
+      type="file"
+      accept=".json,application/json"
+      hidden
+      onchange="restoreProgress(event)"
+    />
+
+    <button
+      class="bar-button"
+      type="button"
+      onclick="openSettings()"
+    >
+      Settings
+    </button>
+
+    <button
+      class="bar-button"
+      type="button"
+      onclick="resetProgress()"
+    >
+      Reset
+    </button>
+
+  </footer>
+
+</div>
+
+
+<!-- =========================
+     SETTINGS
+     ========================= -->
+
+<div
+  class="modal"
+  id="settingsModal"
+  onclick="closeSettingsOutside(event)"
+>
+
+  <div
+    class="modal-card"
+    onclick="event.stopPropagation()"
+  >
+
+    <h2>Settings</h2>
+
+    <div class="field">
+      <label for="goodLabelInput">
+        Left label
+      </label>
+
+      <input
+        id="goodLabelInput"
+        type="text"
+        maxlength="30"
+      />
+    </div>
+
+    <div class="field">
+      <label for="badLabelInput">
+        Right label
+      </label>
+
+      <input
+        id="badLabelInput"
+        type="text"
+        maxlength="30"
+      />
+    </div>
+
+    <div class="settings-grid">
+
+      <div class="field">
+        <label for="goodNumberInput">
+          Left number
+        </label>
+
+        <input
+          id="goodNumberInput"
+          type="number"
+          min="0"
+        />
+      </div>
+
+      <div class="field">
+        <label for="badNumberInput">
+          Right number
+        </label>
+
+        <input
+          id="badNumberInput"
+          type="number"
+          min="0"
+        />
+      </div>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button
+        type="button"
+        onclick="closeSettings()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="save-settings"
+        type="button"
+        onclick="saveSettings()"
+      >
+        Save
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     TOAST
+     ========================= -->
+
+<div
+  class="toast"
+  id="toast"
+>
+  Saved ✓
+</div>
+
+
+<script>
+/* =========================================================
+   DATA
+   ========================================================= */
+
+const STORAGE_KEY = "two-sides-counter-v2";
+
+const DEFAULT_DATA = {
+  good: 0,
+  bad: 200000,
+  goodLabel: "Good Deeds",
+  badLabel: "Bad Deeds"
+};
+
+let data = loadData();
+
+
+/* =========================================================
+   LOAD
+   ========================================================= */
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) {
+      return { ...DEFAULT_DATA };
+    }
+
+    const parsed = JSON.parse(saved);
+
+    return {
+      good: Number.isFinite(Number(parsed.good))
+        ? Math.max(0, Number(parsed.good))
+        : DEFAULT_DATA.good,
+
+      bad: Number.isFinite(Number(parsed.bad))
+        ? Math.max(0, Number(parsed.bad))
+        : DEFAULT_DATA.bad,
+
+      goodLabel:
+        typeof parsed.goodLabel === "string"
+          ? parsed.goodLabel
+          : DEFAULT_DATA.goodLabel,
+
+      badLabel:
+        typeof parsed.badLabel === "string"
+          ? parsed.badLabel
+          : DEFAULT_DATA.badLabel
+    };
+
+  } catch (error) {
+
+    console.error("Could not load saved data:", error);
+
+    return { ...DEFAULT_DATA };
+  }
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+function saveData(showMessage = false) {
+
+  try {
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(data)
+    );
+
+    /*
+      Also save a timestamp so you can verify
+      that the save actually happened.
+    */
+
+    localStorage.setItem(
+      STORAGE_KEY + "-saved-at",
+      new Date().toISOString()
+    );
+
+    if (showMessage) {
+      showToast("Saved ✓");
+    }
+
+    return true;
+
+  } catch (error) {
+
+    console.error("Save failed:", error);
+
+    showToast("Save failed");
+
+    return false;
+  }
+}
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function render() {
+
+  document.getElementById("goodNumber").textContent =
+    data.good.toLocaleString();
+
+  document.getElementById("badNumber").textContent =
+    data.bad.toLocaleString();
+
+  document.getElementById("goodLabel").textContent =
+    data.goodLabel;
+
+  document.getElementById("badLabel").textContent =
+    data.badLabel;
+
+  const gap = Math.abs(data.bad - data.good);
+
+  document.getElementById("gap").textContent =
+    "Gap: " + gap.toLocaleString();
+}
+
+/* =========================================================
+   COUNTERS
+   ========================================================= */
+
+function changeGood(amount) {
+
+  data.good = Math.max(
+    0,
+    data.good + amount
+  );
+
+  render();
+
+  /*
+    Save immediately.
+    This means you don't actually have to
+    press Save after every tap.
+  */
+
+  saveData(false);
+}
+
+
+function changeBad(amount) {
+
+  data.bad = Math.max(
+    0,
+    data.bad + amount
+  );
+
+  render();
+
+  saveData(false);
+}
+
+
+/* =========================================================
+   MANUAL SAVE
+   ========================================================= */
+
+function saveProgress() {
+
+  if (saveData(false)) {
+    showToast("Saved ✓");
+  }
+}
+
+
+/* =========================================================
+   BACKUP
+   ========================================================= */
+
+function backupProgress() {
+
+  const backup = {
+    app: "Two Sides",
+    version: 2,
+    savedAt: new Date().toISOString(),
+    data: data
+  };
+
+  const blob = new Blob(
+    [JSON.stringify(backup, null, 2)],
+    {
+      type: "application/json"
+    }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+
+  link.href = url;
+
+  link.download =
+    "two-sides-backup-" +
+    new Date().toISOString().slice(0, 10) +
+    ".json";
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  link.remove();
+
+  URL.revokeObjectURL(url);
+
+  showToast("Backup downloaded");
+}
+
+
+/* =========================================================
+   RESTORE
+   ========================================================= */
+
+function restoreProgress(event) {
+
+  const file = event.target.files[0];
+
+  if (!file) {
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function () {
+
+    try {
+
+      const backup = JSON.parse(
+        reader.result
+      );
+
+      const restored =
+        backup.data || backup;
+
+      if (
+        typeof restored.good !== "number" ||
+        typeof restored.bad !== "number"
+      ) {
+        throw new Error("Invalid backup");
+      }
+
+      data = {
+        good: Math.max(0, restored.good),
+        bad: Math.max(0, restored.bad),
+        goodLabel:
+          restored.goodLabel || "Good Deeds",
+        badLabel:
+          restored.badLabel || "Bad Deeds"
+      };
+
+      saveData(false);
+
+      render();
+
+      showToast("Restored ✓");
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "That backup file isn't valid."
+      );
+    }
+
+    /*
+      Reset input so the same file
+      can be selected again later.
+    */
+
+    event.target.value = "";
+  };
+
+  reader.readAsText(file);
+}
+
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+function openSettings() {
+
+  document.getElementById(
+    "goodLabelInput"
+  ).value = data.goodLabel;
+
+  document.getElementById(
+    "badLabelInput"
+  ).value = data.badLabel;
+
+  document.getElementById(
+    "goodNumberInput"
+  ).value = data.good;
+
+  document.getElementById(
+    "badNumberInput"
+  ).value = data.bad;
+
+  document.getElementById(
+    "settingsModal"
+  ).classList.add("show");
+}
+
+
+function closeSettings() {
+
+  document.getElementById(
+    "settingsModal"
+  ).classList.remove("show");
+}
+
+
+function closeSettingsOutside(event) {
+
+  if (
+    event.target.id === "settingsModal"
+  ) {
+    closeSettings();
+  }
+}
+
+
+function saveSettings() {
+
+  const goodLabel =
+    document.getElementById(
+      "goodLabelInput"
+    ).value.trim();
+
+  const badLabel =
+    document.getElementById(
+      "badLabelInput"
+    ).value.trim();
+
+  const good =
+    Number(
+      document.getElementById(
+        "goodNumberInput"
+      ).value
+    );
+
+  const bad =
+    Number(
+      document.getElementById(
+        "badNumberInput"
+      ).value
+    );
+
+
+  data.goodLabel =
+    goodLabel || "Good Deeds";
+
+  data.badLabel =
+    badLabel || "Bad Deeds";
+
+  data.good =
+    Number.isFinite(good)
+      ? Math.max(0, good)
+      : 0;
+
+  data.bad =
+    Number.isFinite(bad)
+      ? Math.max(0, bad)
+      : 200000;
+
+
+  saveData(false);
+
+  render();
+
+  closeSettings();
+
+  showToast("Saved ✓");
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+function resetProgress() {
+
+  const confirmed = confirm(
+    "Reset everything back to the original numbers?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  data = { ...DEFAULT_DATA };
+
+  saveData(false);
+
+  render();
+
+  showToast("Reset ✓");
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer;
+
+function showToast(message) {
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent = message;
+
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(
+    () => {
+      toast.classList.remove("show");
+    },
+    1200
+  );
+}
+
+
+/* =========================================================
+   AUTO-SAVE
+   ========================================================= */
+
+/*
+  Save when the page is hidden/closed.
+*/
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+
+    if (
+      document.visibilityState === "hidden"
+    ) {
+      saveData(false);
+    }
+
+  }
+);
+
+
+window.addEventListener(
+  "pagehide",
+  () => {
+    saveData(false);
+  }
+);
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+render();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js");
+  });
+}
+</script>
+</body>
+</html>
