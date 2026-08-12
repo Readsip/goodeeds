@@ -51,8 +51,12 @@
     }
 
     button {
-      cursor: pointer;
-    }
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
     .app {
       min-height: 100vh;
@@ -332,7 +336,7 @@
         text-align: center;
       }
     }
-    .button {
+    button {
   touch-action: manipulation;
   -webkit-user-select: none;
   user-select: none;
