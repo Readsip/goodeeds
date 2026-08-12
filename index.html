@@ -1062,6 +1062,11 @@ window.addEventListener(
    ========================================================= */
 
 render();
+  document.addEventListener("dblclick", function (event) {
+  if (event.target.closest("button")) {
+    event.preventDefault();
+  }
+});
 </script>
 <script>
 if ("serviceWorker" in navigator) {
